@@ -4,6 +4,9 @@ Ferramenta interna para testar pagamentos **Multicaixa Express** e **por referê
 projeto que use a conta de **teste** da AppyPay. Funciona só no ambiente de testes (`gwy-api-tst`),
 nunca mexe em dinheiro real.
 
+> **Aviso:** projeto independente para testes de programadores. Não é a app oficial Multicaixa Express
+> e não tem qualquer ligação à EMIS ou à AppyPay. Usa o teu próprio acesso de teste à AppyPay.
+
 ## Começar
 
 ```bash

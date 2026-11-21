@@ -6,6 +6,6 @@
 
 body {
   min-height: 100vh;
-  background: radial-gradient(1200px 600px at 20% -10%, #134e4a 0%, transparent 60%), #020617;
-  color: #e2e8f0;
+  background: linear-gradient(160deg, #fb923c 0%, #f97316 45%, #ea580c 100%);
+  color: #262626;
 }
