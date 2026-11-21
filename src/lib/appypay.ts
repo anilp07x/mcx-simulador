@@ -53,6 +53,8 @@ async function call(path: string, method = "GET", body?: unknown, timeoutMs = 90
     headers: {
       Authorization: `Bearer ${await accessToken()}`,
       Accept: "application/json",
+      // vazio = mensagens em português (o fetch envia "*" por omissão e a AppyPay responde em inglês)
+      "Accept-Language": "",
       ...(body ? { "Content-Type": "application/json" } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
