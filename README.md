@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Simulador MCX (AppyPay sandbox)
 
-## Getting Started
+Ferramenta interna para testar pagamentos **Multicaixa Express** e **por referência** em qualquer
+projeto que use a conta de **teste** da AppyPay. Funciona só no ambiente de testes (`gwy-api-tst`),
+nunca mexe em dinheiro real.
 
-First, run the development server:
+## Começar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # preenche com as credenciais de teste da AppyPay
+npm run dev -- -p 3100       # http://localhost:3100
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## O que faz
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Separador | Para quê |
+| --- | --- |
+| **Pagar ref.** | Paga uma referência gerada por um projeto (simula o cliente no ATM / app). A AppyPay avisa o webhook desse projeto. |
+| **Express** | Cria uma cobrança Multicaixa Express com um número de teste, para ver a resposta da API. |
+| **Gerar ref.** | Gera uma referência de teste e permite pagá-la logo a seguir. |
+| **Consultar** | Mostra o estado de uma transação pelo ID (GUID). |
+| **Histórico** | Últimas operações (guardadas só neste browser). |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+O painel lateral mostra a resposta completa da API a cada operação.
 
-## Learn More
+## Números de teste (Multicaixa Express)
 
-To learn more about Next.js, take a look at the following resources:
+Confirmados no sandbox em 21/11/2026 — usa-os em qualquer projeto:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Número | Resultado | Código |
+| --- | --- | --- |
+| 900000000 | Aprovado | 100 |
+| 900000001 | Saldo insuficiente | 216 |
+| 900000002 | Tempo esgotado (90 s) | 211 |
+| 900000003 | Recusado pelo cliente | 231 |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notas da API AppyPay (aprendidas a testar)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `merchantTransactionId`: alfanumérico, **máx. 15 caracteres**.
+- Referência: o **número (9 dígitos) é enviado por nós** em `paymentInfo.referenceNumber`; a entidade de teste é `00348`.
+- A referência gerada vem dentro de `responseStatus.reference` (não no topo da resposta).
+- Cobranças com erro devolvem `id` = `00000000-0000-0000-0000-000000000000`.
+- Sem cabeçalho `Accept-Language` as mensagens vêm em português; com `pt-PT` vêm em inglês.
+- Pagamento de referência no sandbox: `POST /mocks/referenceProcessing` com `{ entity, referenceNumber }`.
